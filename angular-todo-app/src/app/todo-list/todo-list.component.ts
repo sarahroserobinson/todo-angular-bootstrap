@@ -4,12 +4,11 @@ import { TodoService } from '../todo.service';
 @Component({
   selector: 'app-todo-list',
   templateUrl: './todo-list.component.html',
-  styleUrls: ['./todo-list.component.css'],
-  standalone: true
+  styleUrls: ['./todo-list.component.css']
 })
 export class TodoListComponent implements OnInit {
   todos: any[] = [];
-  newTodo: string = '';
+  newTask: string = '';
 
   constructor(private todoService: TodoService) {}
 
@@ -18,25 +17,29 @@ export class TodoListComponent implements OnInit {
   }
 
   fetchTodos(): void {
-    this.todoService.getTodos().subscribe(todos => {
-      this.todos = todos;
+    this.todoService.getTodos().subscribe((data) => {
+      this.todos = data.completed_list;
     });
   }
 
-  addTodo(): void {
-    if (this.newTodo.trim()) {
-      const todo = { title: this.newTodo };
-      this.todoService.addTodo(todo).subscribe(todo => {
-        this.todos.push(todo);
-        this.newTodo = '';  
+  addTask(): void {
+    if (this.newTask.trim()) {
+      this.todoService.addTask(this.newTask).subscribe(() => {
+        this.fetchTodos();  // Reload tasks after adding
+        this.newTask = '';  // Clear the input
       });
     }
   }
 
-  deleteTodo(index: number): void {
-    this.todoService.deleteTodo(index).subscribe(() => {
-      this.todos.splice(index, 1);  
+  toggleTask(id: number): void {
+    this.todoService.toggleTask(id).subscribe(() => {
+      this.fetchTodos();  // Reload tasks after toggling
+    });
+  }
+
+  deleteTask(id: number): void {
+    this.todoService.deleteTask(id).subscribe(() => {
+      this.fetchTodos();  // Reload tasks after deletion
     });
   }
 }
-
