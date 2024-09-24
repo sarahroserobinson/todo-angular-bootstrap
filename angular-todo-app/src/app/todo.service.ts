@@ -27,6 +27,6 @@ export class TodoService {
 
   
   deleteTask(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/removetask`, { id });
+    return this.http.delete(`${this.apiUrl}/removetask/${id}`);
   }
 }
